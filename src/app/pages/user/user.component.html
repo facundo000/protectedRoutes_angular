@@ -26,12 +26,12 @@
                   <h2 class="text-3xl font-bold text-gray-900">{{ currentUser.name }}</h2>
                   <div class="flex items-center mt-2">
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
-                          [class.bg-blue-100]="currentUser.role === 'Admin'"
-                          [class.text-blue-800]="currentUser.role === 'Admin'"
-                          [class.bg-gray-100]="currentUser.role === 'User'"
-                          [class.text-gray-800]="currentUser.role === 'User'">
+                          [class.bg-blue-100]="currentUser.role === 'admin'"
+                          [class.text-blue-800]="currentUser.role === 'admin'"
+                          [class.bg-gray-100]="currentUser.role === 'user'"
+                          [class.text-gray-800]="currentUser.role === 'user'">
                       <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                        @if (currentUser.role === 'Admin') {
+                        @if (currentUser.role === 'admin') {
                           <path fill-rule="evenodd" d="M9.504 1.132a1 1 0 01.992 0l1.75 1a1 1 0 11-.992 1.736L10 3.152l-1.254.716a1 1 0 11-.992-1.736l1.75-1zM5.618 4.504a1 1 0 01-.372 1.364L5.016 6l.23.132a1 1 0 11-.992 1.736L3 7.723V8a1 1 0 01-2 0V6a.996.996 0 01.52-.878l1.734-.99a1 1 0 011.364.372zm8.764 0a1 1 0 011.364-.372l1.734.99A.996.996 0 0118 6v2a1 1 0 11-2 0v-.277l-1.254.145a1 1 0 11-.992-1.736L14.984 6l-.23-.132a1 1 0 01-.372-1.364zm-7 4a1 1 0 011.364-.372L10 8.848l1.254-.716a1 1 0 11.992 1.736L11 10.723V12a1 1 0 11-2 0v-1.277l-1.246-.855a1 1 0 01-.372-1.364zM3 11a1 1 0 011 1v1.277l1.246.855a1 1 0 11-.992 1.736l-1.75-1A1 1 0 012 14v-2a1 1 0 011-1zm14 0a1 1 0 011 1v2a1 1 0 01-.504.868l-1.75 1a1 1 0 11-.992-1.736L16 13.277V12a1 1 0 011-1zm-9.618 5.504a1 1 0 011.364-.372l.254.145V16a1 1 0 112 0v.277l.254-.145a1 1 0 11.992 1.736l-1.735.992a.995.995 0 01-1.022 0l-1.735-.992a1 1 0 01-.372-1.364z" clip-rule="evenodd"/>
                         } @else {
                           <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
@@ -53,13 +53,13 @@
                         <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                         </svg>
-                        <span class="text-gray-900">{{ currentUser.email || 'No especificado' }}</span>
+                        <span class="text-gray-900">{{ currentUser.username }}</span>
                       </div>
                       <div class="flex items-center">
                         <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
                         </svg>
-                        <span class="text-gray-900">{{ currentUser.phone || 'No especificado' }}</span>
+                        <span class="text-gray-900">{{ currentUser.name }}</span>
                       </div>
                     </div>
                   </div>
@@ -71,7 +71,7 @@
                         <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
                         </svg>
-                        <span class="text-gray-900">{{ currentUser.department || 'No especificado' }}</span>
+                        <span class="text-gray-900">{{ currentUser.role }}</span>
                       </div>
                       <div class="flex items-center">
                         <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -93,7 +93,7 @@
                         </svg>
                         <div>
                           <p class="text-sm text-gray-500">Fecha de ingreso</p>
-                          <p class="text-gray-900">{{ formatDate(currentUser.joinDate) }}</p>
+                          <p class="text-gray-900">No especificado</p>
                         </div>
                       </div>
                       <div class="flex items-center">
@@ -102,7 +102,7 @@
                         </svg>
                         <div>
                           <p class="text-sm text-gray-500">Último acceso</p>
-                          <p class="text-gray-900">{{ formatDateTime(currentUser.lastLogin) }}</p>
+                          <p class="text-gray-900">No especificado</p>
                         </div>
                       </div>
                     </div>
@@ -122,17 +122,9 @@
 
           <!-- Action Buttons -->
           <div class="flex justify-end space-x-4">
-            <button (click)="goBack()"
-                    class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors duration-150 shadow-sm flex items-center">
-              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-              </svg>
-              Salir
-            </button>
             
-            @if (currentUser.role !== 'Admin') {
-              <button 
-                      class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors duration-150 shadow-sm flex items-center">
+            @if (currentUser.role !== 'admin') {
+              <button class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors duration-150 shadow-sm flex items-center">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                 </svg>

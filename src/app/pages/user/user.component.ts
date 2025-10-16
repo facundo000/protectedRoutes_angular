@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from './temp.service';
+import { UsersApiService, RemoteUser } from '../../services/users-api.service';
 
 @Component({
   selector: 'app-user',
@@ -11,19 +11,28 @@ import { UserService } from './temp.service';
 export class UserComponent { 
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private userService = inject(UserService);
+  private usersApi = inject(UsersApiService);
 
   private userId = signal<number | null>(null);
-  user = computed(() => {
-    const id = this.userId();
-    return id ? this.userService.getUserById(id) : null;
-  });
+  // user holds the remote user profile or null
+  user = signal<RemoteUser | null>(null);
 
   constructor() {
     // Get user ID from route params
     this.route.params.subscribe(params => {
-      const id = parseInt(params['id']);
-      this.userId.set(isNaN(id) ? null : id);
+      const id = params['id'];
+      if (id) {
+        // request remote profile
+        this.usersApi.getUserProfile(id).subscribe({
+          next: (u) => this.user.set(u),
+          error: (err) => {
+            console.error('Error fetching user profile', err);
+            this.user.set(null);
+          }
+        });
+      } else {
+        this.user.set(null);
+      }
     });
   }
 
@@ -59,7 +68,7 @@ export class UserComponent {
   }
 
   goBack(): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/dashboard']);
   }
 
   deleteUser(): void {
@@ -67,7 +76,7 @@ export class UserComponent {
     if (!currentUser) return;
 
     if (confirm(`¿Está seguro de que desea eliminar al usuario ${currentUser.name}?`)) {
-      this.userService.deleteUser(currentUser.id);
+      alert('Eliminación no implementada en el backend desde este cliente.');
       this.router.navigate(['/']);
     }
   }

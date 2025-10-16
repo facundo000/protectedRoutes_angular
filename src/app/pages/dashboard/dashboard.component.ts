@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from '../user/temp.service';
+import { UsersApiService, RemoteUser } from '../../services/users-api.service';
 
 interface User {
   id: number;
@@ -17,52 +17,55 @@ interface User {
 export class DashboardComponent { 
    constructor(
     private router: Router,
-    public userService: UserService
-  ) {}
+    private usersApi: UsersApiService
+  ) {
+    // Cargar usuarios remotos al crear el componente
+    this.loadRemoteUsers();
+  }
+
+  // Remote users fetched from backend
+  remoteUsers = signal<RemoteUser[]>([]);
+
+  loadRemoteUsers(): void {
+    this.usersApi.getUsers().subscribe({
+      next: (users) => this.remoteUsers.set(users || []),
+      error: (err) => {
+        console.error('Failed to load remote users', err);
+        alert('Error al obtener usuarios remotos');
+      }
+    });
+  }
 
   // Señal para el usuario actual
   currentUser = signal('Admin');
 
   // Señales computadas
-  adminCount = computed(() => this.userService.users().filter(user => user.role === 'Admin').length);
+  adminCount = computed(() => this.remoteUsers().filter(u => u.role === 'admin').length);
 
-  viewUser(user: any): void {
-    console.log('Ver información del usuario:', user);
+  viewUser(user: RemoteUser): void {
+    // Navegar a la página de detalles del usuario
     this.router.navigate(['/user', user.id]);
   }
 
-  deleteUser(user: any): void {
-    if (confirm(`¿Está seguro de que desea eliminar al usuario ${user.name}?`)) {
-      this.userService.deleteUser(user.id);
-      console.log('Usuario eliminado:', user);
-    }
-  }
-
-  addUser(): void {
-    const name = prompt('Ingrese el nombre del nuevo usuario:');
-    if (name && name.trim()) {
-      const newUser = {
-        role: 'User',
-        name: name.trim(),
-        email: `${name.trim().toLowerCase().replace(' ', '.')}@empresa.com`,
-        phone: '+34 000 000 000',
-        department: 'Sin asignar',
-        joinDate: new Date().toISOString().split('T')[0],
-        lastLogin: new Date().toISOString()
-      };
-      this.userService.addUser(newUser);
-      console.log('Usuario agregado:', newUser);
-    }
-  }
-
-  exportUsers(): void {
-    const dataStr = JSON.stringify(this.userService.users(), null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+  deleteUser(user: RemoteUser): void {
+    const confirmDelete = confirm(`¿Está seguro de que desea eliminar al usuario ${user.name} ${user.surname}?`);
     
-    const exportFileDefaultName = 'usuarios.json';
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
+    if (confirmDelete) {
+      this.usersApi.deleteUser(user.id).subscribe({
+        next: (result) => {
+          if (result) {
+            alert('Usuario eliminado exitosamente');
+            // Recargar la lista de usuarios
+            this.loadRemoteUsers();
+          } else {
+            alert('No se pudo eliminar el usuario');
+          }
+        },
+        error: (err) => {
+          console.error('Error al eliminar usuario', err);
+          alert('Error al eliminar el usuario. Por favor, intente nuevamente.');
+        }
+      });
+    }
   }
 }
