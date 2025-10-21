@@ -27,17 +27,17 @@ export class LoginInComponent {
     }
 
     const { username, password } = this.loginForm.value;
-    this.authService.login(username, password).subscribe(
-      (response) => {
+    this.authService.login(username, password).subscribe({
+      next: (response) => {
         // Login successful (token stored by AuthService)
         console.log('login response', response);
         this.router.navigate(['/dashboard']);
       },
-      (err) => {
+      error: (err) => {
         console.error('login error', err);
         // TODO: display error to user - simple alert for now
         alert(err?.error?.message || 'Error en el login');
       }
-    );
+    })
   }
 }
