@@ -50,11 +50,14 @@ export class AuthService {
   }
 
   getCurrentUserId(): string | null {
+    return this.getTokenPayload()?.id ?? null;
+  }
+
+  getTokenPayload(): { id: string; username: string; role: string } | null {
     const token = this.getToken();
     if (!token) return null;
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.id ?? null;
+      return JSON.parse(atob(token.split('.')[1]));
     } catch {
       return null;
     }

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UsersApiService, RemoteUser } from '../../services/users-api.service';
 import { AuthService } from '../auth/service/auth.service';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-user',
@@ -17,7 +18,7 @@ export class UserComponent {
   private authService = inject(AuthService);
   private fb = inject(FormBuilder);
 
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = environment.apiUrl;
 
   user = signal<RemoteUser | null>(null);
   uploading = signal(false);
@@ -39,13 +40,15 @@ export class UserComponent {
     return id === currentUser.id;
   });
 
+  isAdmin = computed(() => this.authService.getTokenPayload()?.role === 'admin');
+
   profileImageUrl = computed(() => {
     const currentUser = this.user();
     if (!currentUser?.profileImage) return null;
     // profileImage can be '/uploads/file.jpg' (from upload response) or 'file.jpg' (from DB)
     const path = currentUser.profileImage.startsWith('/')
       ? currentUser.profileImage
-      : `/uploads/${currentUser.profileImage}`;
+      : `${this.baseUrl}/uploads/${currentUser.profileImage}`;
     return `${this.baseUrl}${path}`;
   });
 
@@ -168,9 +171,11 @@ export class UserComponent {
     const currentUser = this.user();
     if (!currentUser) return;
 
-    if (confirm(`¿Está seguro de que desea eliminar al usuario ${currentUser.name}?`)) {
-      alert('Eliminación no implementada en el backend desde este cliente.');
-      this.router.navigate(['/']);
-    }
+    if (!confirm(`¿Está seguro de que desea eliminar al usuario ${currentUser.name} ${currentUser.surname}?`)) return;
+
+    this.usersApi.deleteUser(currentUser.id).subscribe({
+      next: () => this.router.navigate(['/dashboard']),
+      error: (err) => alert(err?.error?.message || 'Error al eliminar el usuario.'),
+    });
   }
 }
