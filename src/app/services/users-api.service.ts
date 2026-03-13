@@ -34,4 +34,8 @@ export class UsersApiService {
     formData.append('file', file);
     return this.http.post<{ profileImage: string }>(`${this.base}/users/upload-image`, formData);
   }
+
+  updateUser(id: string, data: { username?: string; name?: string; surname?: string }): Observable<RemoteUser> {
+    return this.http.patch<RemoteUser>(`${this.base}/users/${id}`, data);
+  }
 }
