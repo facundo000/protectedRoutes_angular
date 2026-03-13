@@ -9,6 +9,7 @@ export interface RemoteUser {
   surname: string;
   password: string;
   role: string;
+  profileImage?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -26,5 +27,11 @@ export class UsersApiService {
 
   deleteUser(id: string): Observable<boolean> {
     return this.http.delete<boolean>(`${this.base}/users/remove/${id}`);
+  }
+
+  uploadProfileImage(file: File): Observable<{ profileImage: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.post<{ profileImage: string }>(`${this.base}/users/upload-image`, formData);
   }
 }
